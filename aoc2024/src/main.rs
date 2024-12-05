@@ -1,4 +1,4 @@
-use std::fs;
+use std::{collections::HashMap, fs};
 
 fn main() {
     // --snip--
@@ -19,7 +19,27 @@ fn main() {
     left_list.sort();
     right_list.sort();
 
-    let distances: Vec<i32> = left_list.into_iter().zip(right_list.into_iter()).map(|(l, r)| (l - r).abs()).collect();
-    let sum: i32 = distances.iter().sum();
-    println!("{sum}")
+    //Part 1
+    //let distances: Vec<i32> = left_list.into_iter().zip(right_list.into_iter()).map(|(l, r)| (l - r).abs()).collect();
+    //let sum: i32 = distances.iter().sum();
+    //println!("{sum}");
+
+    let mut hm: HashMap<i32, i32> = HashMap::new();
+    let mut score = 0;
+    for value in &right_list {
+        if hm.contains_key(value) {
+            continue;
+        }
+        let cop = right_list.clone().into_iter().filter(|n| *n == *value).count();
+        hm.insert(*value, cop as i32);
+    }
+
+    for value in &left_list {
+        if let Some(inner) = hm.get(value) {
+            score += value * *inner;
+        }
+        
+    }
+
+    println!("{score}")
 }
